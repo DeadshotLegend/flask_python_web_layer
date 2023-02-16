@@ -4,7 +4,7 @@ services:
                 image: snake_realgame_web_v1
                 build: .
                 ports:
-                        - "7495:8086"
+                        - "7495:7495"
                 volumes:
                         - ./volumes:/volumes
                         - ./instance:/instance
