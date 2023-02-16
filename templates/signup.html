@@ -109,7 +109,7 @@
                                     sortTable(2);
                                 }
 
-                                xmlhttp.open("GET", "http://192.168.68.53:8086/api/gamers/");
+                                xmlhttp.open("GET", "https://realgoat.duckdns.org/api/gamers/");
                                 xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
                                 xmlhttp.send("team=" + dbParam);
                             }
@@ -144,7 +144,7 @@
                                     }
                                 }
 
-                                xmlhttp.open("POST", "http://192.168.68.53:8086/api/gamers/create", true);
+                                xmlhttp.open("POST", "https://realgoat.duckdns.org/api/gamers/create", true);
                                 xmlhttp.setRequestHeader("Content-type", "application/json");
                                 xmlhttp.send(reqData);
                             }
