@@ -5,25 +5,15 @@
     <!-- Start of body content specific to page -->
     <div class="px-5 py-5 mx-auto">
         <h1 ><strong>Lets Play Snakes!</strong></h1>
-        <div class="navbar-nav">
-            <!-- url_for is a Jinja2 pre-processor that finds route from function name (def) -->
-            <a class="nav-link" href={{ url_for('signup') }}>Signup</a>
-           
-            
-        </div>
         <div class="row">
-            <div class="col-4">
+            
                 <div class="card">
                     <div class="card-body">
-                    <h5 class="card-title">Gamers</h5>
+                    <h5 class="card-title">Signup</h5>
                     <p id="gamers"></p>
                    
                     <p class="card-text">
                         <script>
-                            function getFormattedDate(dd){
-                                const d = new Date(dd);
-                                return d.toLocaleDateString();
-                            }
                             function sortTable(n) {
                                 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
                                 table = document.getElementById("lboard");
@@ -92,7 +82,7 @@
                                     let counter = 0;
                                     for (let gamer in gamers) {
                                         let gamerName = gamers[gamer].name;
-                                        text += "<tr><td>" + gamerName + "</td><td>" + getFormattedDate(gamers[gamer].dob) + "</td><td>" + gamers[gamer].age + "</td></tr>";
+                                        text += "<tr><td>" + gamerName + "</td><td>" + gamers[gamer].dob + "</td><td>" + gamers[gamer].age + "</td></tr>";
                                         console.log(gamerName);
 
                                         for (let score in gamers[gamer].scores){
@@ -100,7 +90,7 @@
                                             scoreTemp["gamername"] = gamerName;
                                             let datePlayed = gamers[gamer].scores[score]["dateplayed"];
                                             let scoreGot = gamers[gamer].scores[score]["score"];
-                                            text1 +="<tr><td>" + gamerName + "</td><td>" +getFormattedDate(datePlayed) + "</td><td>" + scoreGot + "</td></tr>";
+                                            text1 +="<tr><td>" + gamerName + "</td><td>" +datePlayed + "</td><td>" + scoreGot + "</td></tr>";
                                             //console.log(gamers[gamer].scores)
                                             //console.log(gamers[gamer].scores[score]);
                                             //console.log(gamers[gamer].scores[score]["dateplayed"]);
@@ -123,30 +113,56 @@
                                 xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
                                 xmlhttp.send("team=" + dbParam);
                             }
+
+                            function signmeup(){
+                                let eUserName = document.getElementById("username");
+                                let eUserId = document.getElementById("userid");
+                                let ePassword = document.getElementById("password");
+                                let eDob = document.getElementById("dob");
+                                console.log(eUserName.value);
+                                console.log(eUserId.value);
+                                console.log(ePassword.value);
+                                console.log(eDob.value);
+                                let dobValue = eDob.value.split("-");
+                                console.log(dobValue);
+                                let dobValueFormatted = dobValue[1] + "-" + dobValue[2] +"-" +dobValue[0];
+                                console.log(dobValueFormatted);
+                                let reqData = "{\"dob\":\""+dobValueFormatted+"\",\"name\":\""+eUserName.value+"\",\"uid\":\""+eUserId.value+"\",\"password\":\""+ePassword.value+"\"}";
+                                console.log(reqData);
+                                
+                                const dbParam = JSON.stringify({table:"gamers",limit:20});
+                                const xmlhttp = new XMLHttpRequest();
+                                xmlhttp.onload = function() {
+                                    const gamers = JSON.parse(this.responseText);
+                                    console.log(gamers);
+                                    if (gamers["id"]){
+                                        console.log("Success");
+                                        document.getElementById("msg").innerHTML = "You are all set to enjoy Snakes!";
+                                    } else if (gamers["message"]){
+                                        console.log(gamers["message"]);
+                                        document.getElementById("msg").innerHTML = "No dice! Something did not go your way. ("+gamers["message"]+")";
+                                    }
+                                }
+
+                                xmlhttp.open("POST", "http://192.168.68.53:8086/api/gamers/create", true);
+                                xmlhttp.setRequestHeader("Content-type", "application/json");
+                                xmlhttp.send(reqData);
+                            }
                             
-                            load();
+                            //load();
                         </script>
-                        <!--<table width="100%">
-                            <tr><td>Team</td><td>Challenger</td></tr>
-                            <tr><td id="team1"></td><td id="team2"></td></tr>
-                            <tr><td id="team1_stats"></td><td id="team2_stats"></td></tr>
-                        </table>-->
+                        <table width="100%">
+                            <tr><th style="width:200px"><label for="username">Name</label></th><td><input style="width:400px" type="text" id="username"/></td></tr>
+                            <tr><th style="width:200px"><label for="userid">ID</label></th><td><input style="width:400px" type="text" id="userid"/></td></tr>
+                            <tr><th style="width:200px"><label for="password">Password</label></th><td><input style="width:400px" type="password" id="password"/></td></tr>
+                            <tr><th style="width:200px"><label for="doc">Date of Birth</label></th><td><input style="width:400px" type="date" id="dob"/></td></tr>
+                            <tr><td colspan="2"><button type="button" onclick="signmeup()">Sign me up!</button></td></tr>
+                        </table>
+                        <p id="msg"></p>
                     </p>
-                    <a href="#" class="btn btn-primary">Reload</a>
                     </div>
-                </div>
+               
                 
-            </div>
-            <div class="col-4">
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <h5 class="card-title">Leaderboards</mark></h5>
-                    <p class="card-text">
-                        <p id="leaderboards"></p>
-                    </p>
-                    </div>
-                </div>
             </div>
             <!--
             <div class="col-4">

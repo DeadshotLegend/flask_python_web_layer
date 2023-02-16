@@ -18,6 +18,14 @@ def index():
 def snakes():
     return render_template("snakes.html")
 
+@app.route('/snakegame')  
+def snakegame():
+    return render_template("snakegame.html")
+
+@app.route('/signup')  
+def signup():
+    return render_template("signup.html")
+
 @app.route('/snake_game/')
 def render_static():
     return render_template('snake_game.html')
