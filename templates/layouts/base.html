@@ -7,7 +7,7 @@ This HTML is setup as as a Jinja2 layout, coders use layouts for:
 <!DOCTYPE HTML>
 <html lang="en">
 
-{% set basename = "JNVS News" %}
+{% set basename = "Nighthaws Realfruit" %}
 {% set github = "https://github.com/nighthawkcoders" %}
 {% set twitter = "https://twitter.com/NighthawkCoding" %}
 {% set youtube = "https://www.youtube.com/channel/UClIKOsDS5dsfzFA3zveDT3Q?view_as=subscriber" %}
@@ -49,7 +49,7 @@ This HTML is setup as as a Jinja2 layout, coders use layouts for:
 {% block background %}
     <script src="{{ url_for('static', filename='js/three.r119.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vanta.birds.min.js') }}"></script>
-    <script>
+    <!--<script>
         VANTA.BIRDS({
             el: "body",
             mouseControls: true,
@@ -60,7 +60,7 @@ This HTML is setup as as a Jinja2 layout, coders use layouts for:
             scale: 1.00,
             scaleMobile: 1.00
         })
-    </script>
+    </script>-->
 {% endblock %}
 
 </html>
