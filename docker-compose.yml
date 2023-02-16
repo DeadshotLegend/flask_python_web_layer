@@ -1,10 +1,10 @@
 version: '3'
 services:
         web:
-                image: snake_realgame_v1
+                image: snake_realgame_web_v1
                 build: .
                 ports:
-                        - "8344:8086"
+                        - "7495:8086"
                 volumes:
                         - ./volumes:/volumes
                         - ./instance:/instance
