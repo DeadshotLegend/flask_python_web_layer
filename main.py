@@ -30,7 +30,7 @@ def signup():
 def render_static():
     return render_template('snake_game.html')
 
-@app.route('/snake_game/snake_apk/')
+@app.route('/snake_game/snake.apk')
 def render_static_snakeapk():
     return render_template('snake.apk')
 
