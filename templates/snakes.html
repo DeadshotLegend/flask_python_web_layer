@@ -8,17 +8,16 @@
         <div class="navbar-nav">
             <!-- url_for is a Jinja2 pre-processor that finds route from function name (def) -->
             <a class="nav-link" href={{ url_for('signup') }}>Signup</a>
-           
-            
         </div>
         <div class="row">
             <div class="col-4">
                 <div class="card">
                     <div class="card-body">
                     <h5 class="card-title">Gamers</h5>
+                    <p style="color:red" id="result"></p>
                     <p id="gamers"></p>
                    
-                    <p class="card-text">
+                    <p class="card-gamerTableText">
                         <script>
                             function getFormattedDate(dd){
                                 const d = new Date(dd);
@@ -81,18 +80,33 @@
 
                             const leaderboards = {};
 
+                            function deleteGamer(gamerId, gamerName){
+                                const xmlhttp = new XMLHttpRequest();
+                                xmlhttp.onload = function() {
+                                    document.getElementById("result").innerHTML = "Deleted Gamer : " + gamerName;
+                                    load();
+                                }
+                                xmlhttp.onerror = function() {
+                                    document.getElementById("result").innerHTML = "Could not delete Gamer : " + gamerName;
+                                };
+
+                                xmlhttp.open("DELETE", "https://realgoat.duckdns.org/api/gamers/delete?id="+gamerId);
+                                xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
+                                xmlhttp.send();
+                            }
+
                             function load(){
                                 const dbParam = JSON.stringify({table:"gamers",limit:20});
                                 const xmlhttp = new XMLHttpRequest();
                                 xmlhttp.onload = function() {
                                     const gamers = JSON.parse(this.responseText);
-                                    let text = "<table border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>DOB</th><th>Age</th></tr>";
-                                    let text1 = "<table id='lboard' border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>Date</th><th>Score</th></tr>";
+                                    let gamerTableText = "<table border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>DOB</th><th>Age</th><th>#</th></tr>";
+                                    let leaderBoardTableText = "<table id='lboard' border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>Date</th><th>Score</th></tr>";
                                     
                                     let counter = 0;
                                     for (let gamer in gamers) {
                                         let gamerName = gamers[gamer].name;
-                                        text += "<tr><td>" + gamerName + "</td><td>" + getFormattedDate(gamers[gamer].dob) + "</td><td>" + gamers[gamer].age + "</td></tr>";
+                                        gamerTableText += "<tr><td>" + gamerName + "</td><td>" + gamers[gamer].dob + "</td><td>" + gamers[gamer].age + "</td><td><a href='javascript:deleteGamer(\"" + gamers[gamer].id + "\",\"" + gamerName + "\");'>Delete</a></td></tr>";
                                         console.log(gamerName);
 
                                         for (let score in gamers[gamer].scores){
@@ -100,37 +114,27 @@
                                             scoreTemp["gamername"] = gamerName;
                                             let datePlayed = gamers[gamer].scores[score]["dateplayed"];
                                             let scoreGot = gamers[gamer].scores[score]["score"];
-                                            text1 +="<tr><td>" + gamerName + "</td><td>" +getFormattedDate(datePlayed) + "</td><td>" + scoreGot + "</td></tr>";
-                                            //console.log(gamers[gamer].scores)
-                                            //console.log(gamers[gamer].scores[score]);
-                                            //console.log(gamers[gamer].scores[score]["dateplayed"]);
-                                            //console.log(gamers[gamer].scores[score]["score"]);
+                                            leaderBoardTableText +="<tr><td>" + gamerName + "</td><td>" +getFormattedDate(datePlayed) + "</td><td>" + scoreGot + "</td></tr>";
                                             scoreTemp["dateplayed"] = datePlayed;
                                             scoreTemp["score"] = scoreGot;
                                             leaderboards[counter++] = scoreTemp;
                                         }
                                         
                                     }
-                                    text += "</table>";
-                                    text1 += "</table>";
-                                    //console.log(Object.keys(leaderboards));
-                                    document.getElementById("gamers").innerHTML = text;
-                                    document.getElementById("leaderboards").innerHTML = text1;
+                                    gamerTableText += "</table>";
+                                    leaderBoardTableText += "</table>";
+                                    document.getElementById("gamers").innerHTML = gamerTableText;
+                                    document.getElementById("leaderboards").innerHTML = leaderBoardTableText;
                                     sortTable(2);
                                 }
 
                                 xmlhttp.open("GET", "https://realgoat.duckdns.org/api/gamers/");
                                 xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
-                                xmlhttp.send("team=" + dbParam);
+                                xmlhttp.send();
                             }
                             
                             load();
                         </script>
-                        <!--<table width="100%">
-                            <tr><td>Team</td><td>Challenger</td></tr>
-                            <tr><td id="team1"></td><td id="team2"></td></tr>
-                            <tr><td id="team1_stats"></td><td id="team2_stats"></td></tr>
-                        </table>-->
                     </p>
                     <a href="#" class="btn btn-primary">Reload</a>
                     </div>
@@ -138,11 +142,10 @@
                 
             </div>
             <div class="col-4">
-                <div class="card">
-                    
+                <div class="card">                    
                     <div class="card-body">
                     <h5 class="card-title">Leaderboards</mark></h5>
-                    <p class="card-text">
+                    <p class="card-gamerTableText">
                         <p id="leaderboards"></p>
                     </p>
                     </div>
@@ -154,7 +157,7 @@
                     
                     <div class="card-body">
                     <h5 class="card-title">Snakes</mark></h5>
-                    <p class="card-text">
+                    <p class="card-gamerTableText">
                         <iframe allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" id="game_drop" allowfullscreen="true" src="https://v6p9d9t4.ssl.hwcdn.net/html/7353839/index.html" scrolling="no" frameborder="0"></iframe>
                     </p>
                     </div>
