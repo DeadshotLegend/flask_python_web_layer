@@ -1,19 +1,14 @@
 import pygame, random, asyncio, time
-import requests
 from sys import exit
 
 def postScore(score):
     print("posting score")
-    url = 'https://realgoat.duckdns.org/api/scores/create'
-    myobj = {"score": score,"uid": 11}
-
-    x = requests.post(url, json = myobj)
-    print(x.text)
+    
 
 def gameLost(score):
     dis.fill(black)
     font = pygame.font.SysFont(None, 25)
-    score_text = font.render("Score ("+str(score)+")", True, white)
+    score_text = font.render("Score ("+str(score)+")", True, black)
     dis.blit(score_text, [0, 0])
     game_over_text = font.render("Game Over! Enter to play again.", True, white)
     dis.blit(game_over_text, [5, height/2 - 25])
@@ -62,6 +57,8 @@ black=(0,0,0)
 red=(255,0,0)
 green=(0,255,0)
 brown=(123,63,0)
+yellow=(255,255,0)
+almond=(234, 221, 202)
 
 
 # run the game until it is over
@@ -78,6 +75,7 @@ async def main():
     x1_change = 0       
     y1_change = 0
     score=0
+    score_increment=1
     snake_shape = []
     snake_len = 1
     game_quit=False
@@ -138,15 +136,25 @@ async def main():
 
                     pygame.draw.rect(dis, black, [snake_x, snake_y, snake_size, snake_size])
                     #pygame.display.update()
-                    dis.fill(blue)
+                    dis.fill(almond)
         if snake_x >= width or snake_x < 0 or snake_y >= height or snake_y < 0:
             game_lost = True
             dis.fill(black)
                         
         snake_x += x1_change
         snake_y += y1_change
-        dis.fill(blue)
-        pygame.draw.rect(dis, brown, [mouse_x, mouse_y, snake_size, snake_size])
+        dis.fill(almond)
+
+        if (score_increment == 1):
+            pygame.draw.rect(dis, brown, [mouse_x, mouse_y, snake_size, snake_size])
+        elif (score_increment == 2):
+            pygame.draw.rect(dis, green, [mouse_x, mouse_y, snake_size, snake_size])
+        elif (score_increment == 3):
+            pygame.draw.rect(dis, yellow, [mouse_x, mouse_y, snake_size, snake_size])
+        elif (score_increment == 4):
+            pygame.draw.rect(dis, blue, [mouse_x, mouse_y, snake_size, snake_size])
+        elif (score_increment == 5):
+            pygame.draw.rect(dis, red, [mouse_x, mouse_y, snake_size, snake_size])
         
         new_snake_pos = []
         new_snake_pos.append(snake_x)
@@ -169,10 +177,11 @@ async def main():
         #pygame.display.update()
  
         if snake_x == mouse_x and snake_y == mouse_y:
-            score+=1
+            score+=score_increment
+            snake_len += score_increment
             mouse_x = round(random.randrange(0, width - mouse_size) / 10.0) * 10.0
             mouse_y = round(random.randrange(0, height - mouse_size) / 10.0) * 10.0
-            snake_len += 1
+            score_increment = random.randrange(1,6)
  
         if game_lost:
             gameLost(score)
