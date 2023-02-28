@@ -97,6 +97,14 @@
                             const leaderboards = {};
 
                             function deleteGamer(gamerId, gamerName){
+                                let userPassword = prompt("Please enter secret admin key to delete gamers...", "...");
+                                if (userPassword == null || userPassword == "") {
+                                    document.getElementById("result").innerHTML = "You chose to cancel delete action.";
+                                    return;
+                                } else if (userPassword != jk){
+                                    document.getElementById("result").innerHTML = "Incorrect secret. Gamer will not be deleted.";
+                                    return;
+                                }
                                 const xmlhttp = new XMLHttpRequest();
                                 xmlhttp.onload = function() {
                                     document.getElementById("result").innerHTML = "Deleted Gamer : " + gamerName;
