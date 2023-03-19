@@ -1,4 +1,7 @@
 import threading
+import requests
+import json
+from flask import request, redirect, url_for
 
 # import "packages" from flask
 from flask import render_template  # import render_template from "public" flask libraries
@@ -14,9 +17,24 @@ def page_not_found(e):
 def index():
     return render_template("index.html")
 
+@app.route('/snakes/delete')  
+def delete_gamer():
+    id = request.args.get('id')
+    url = 'https://realgoat.duckdns.org/api/gamers/delete?id='+id
+    print(id)
+    print(request.args.get('gamername'))
+    x = requests.delete(url)
+    print(x.text)
+    return redirect(url_for("snakes"))
+
 @app.route('/snakes')  
 def snakes():
-    return render_template("snakes.html")
+    url = 'https://realgoat.duckdns.org/api/gamers'
+   
+    x = requests.get(url)
+    #print(x.text)
+    json_object = json.loads(x.text)
+    return render_template("snakes.html", gamers=json_object)
 
 @app.route('/snakegame')  
 def snakegame():

@@ -13,154 +13,26 @@
             <div class="col-4">
                 <div class="card">
                     <div class="card-body">
-                    <h5 class="card-title">Gamers</h5>
-                    <p style="color:red" id="result"></p>
-                    <p id="gamers"></p>
-                   
-                    <p class="card-gamerTableText">
-                        <script>
-                            function getFormattedDate(dd){
-                                const d = new Date(dd);
-                                return d.toLocaleDateString();
-                            }
-                            function sortTable(n, isNumber, tableId) {
-                                var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-                                table = document.getElementById(tableId);
-                                switching = true;
-                                //Set the sorting direction to ascending:
-                                dir = "desc"; 
-                                /*Make a loop that will continue until
-                                no switching has been done:*/
-                                while (switching) {
-                                    //start by saying: no switching is done:
-                                    switching = false;
-                                    rows = table.rows;
-                                    /*Loop through all table rows (except the
-                                    first, which contains table headers):*/
-                                    for (i = 1; i < (rows.length - 1); i++) {
-                                    //start by saying there should be no switching:
-                                    shouldSwitch = false;
-                                    /*Get the two elements you want to compare,
-                                    one from current row and one from the next:*/
-                                    x = rows[i].getElementsByTagName("TD")[n];
-                                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                                    /*check if the two rows should switch place,
-                                    based on the direction, asc or desc:*/
-                                    if (dir == "asc") {
-                                        if (isNumber){
-                                            if (Number(x.innerHTML) > Number(y.innerHTML)) {
-                                                //if so, mark as a switch and break the loop:
-                                                shouldSwitch= true;
-                                                break;
-                                            }
-                                        } else {
-                                            if (x.innerHTML > y.innerHTML) {
-                                                //if so, mark as a switch and break the loop:
-                                                shouldSwitch= true;
-                                                break;
-                                            }
-                                        }
-                                    } else if (dir == "desc") {
-                                        if (isNumber){
-                                            if (Number(x.innerHTML) < Number(y.innerHTML)) {
-                                                //if so, mark as a switch and break the loop:
-                                                shouldSwitch= true;
-                                                break;
-                                            }
-                                        } else {
-                                            if (x.innerHTML < y.innerHTML) {
-                                                //if so, mark as a switch and break the loop:
-                                                shouldSwitch= true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    }
-                                    if (shouldSwitch) {
-                                    /*If a switch has been marked, make the switch
-                                    and mark that a switch has been done:*/
-                                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                                    switching = true;
-                                    //Each time a switch is done, increase this count by 1:
-                                    switchcount ++;      
-                                    } else {
-                                    /*If no switching has been done AND the direction is "asc",
-                                    set the direction to "desc" and run the while loop again.*/
-                                    if (switchcount == 0 && dir == "desc") {
-                                        dir = "asc";
-                                        switching = true;
-                                    }
-                                    }
-                                }
-                            }
-
-                            const leaderboards = {};
-
-                            function deleteGamer(gamerId, gamerName){
-                                let userPassword = prompt("Please enter secret admin key to delete gamers...", "...");
-                                if (userPassword == null || userPassword == "") {
-                                    document.getElementById("result").innerHTML = "You chose to cancel delete action.";
-                                    return;
-                                } else if (userPassword != jk){
-                                    document.getElementById("result").innerHTML = "Incorrect secret. Gamer will not be deleted.";
-                                    return;
-                                }
-                                const xmlhttp = new XMLHttpRequest();
-                                xmlhttp.onload = function() {
-                                    document.getElementById("result").innerHTML = "Deleted Gamer : " + gamerName;
-                                    load();
-                                }
-                                xmlhttp.onerror = function() {
-                                    document.getElementById("result").innerHTML = "Could not delete Gamer : " + gamerName;
-                                };
-
-                                xmlhttp.open("DELETE", "https://realgoat.duckdns.org/api/gamers/delete?id="+gamerId);
-                                xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
-                                xmlhttp.send();
-                            }
-
-                            function load(){
-                                const dbParam = JSON.stringify({table:"gamers",limit:20});
-                                const xmlhttp = new XMLHttpRequest();
-                                xmlhttp.onload = function() {
-                                    const gamers = JSON.parse(this.responseText);
-                                    let gamerTableText = "<table id='gamersTable' border='1' width='100%' style='border-collapse: separate;'><tr><th onclick=\"sortTable(0, false, 'gamersTable')\">Name</th><th onclick=\"sortTable(1, false, 'gamersTable')\">DOB</th><th onclick=\"sortTable(2, true, 'gamersTable')\">Age</th><th>#</th></tr>";
-                                    let leaderBoardTableText = "<table id='lboard' border='1' width='100%' style='border-collapse: separate;'><tr><th onclick=\"sortTable(0, false, 'lboard')\">Name</th><th onclick=\"sortTable(1, false, 'lboard')\">Date</th><th onclick=\"sortTable(2, true, 'lboard')\">Score</th></tr>";
-                                    
-                                    let counter = 0;
-                                    for (let gamer in gamers) {
-                                        let gamerName = gamers[gamer].name;
-                                        gamerTableText += "<tr><td>" + gamerName + "</td><td>" + gamers[gamer].dob + "</td><td>" + gamers[gamer].age + "</td><td><a href='javascript:deleteGamer(\"" + gamers[gamer].id + "\",\"" + gamerName + "\");'>Delete</a></td></tr>";
-                                        console.log(gamerName);
-
-                                        for (let score in gamers[gamer].scores){
-                                            let scoreTemp = {};
-                                            scoreTemp["gamername"] = gamerName;
-                                            let datePlayed = gamers[gamer].scores[score]["dateplayed"];
-                                            let scoreGot = gamers[gamer].scores[score]["score"];
-                                            leaderBoardTableText +="<tr><td>" + gamerName + "</td><td>" +getFormattedDate(datePlayed) + "</td><td>" + scoreGot + "</td></tr>";
-                                            scoreTemp["dateplayed"] = datePlayed;
-                                            scoreTemp["score"] = scoreGot;
-                                            leaderboards[counter++] = scoreTemp;
-                                        }
-                                        
-                                    }
-                                    gamerTableText += "</table>";
-                                    leaderBoardTableText += "</table>";
-                                    document.getElementById("gamers").innerHTML = gamerTableText;
-                                    document.getElementById("leaderboards").innerHTML = leaderBoardTableText;
-                                    sortTable(2, true, 'lboard');
-                                }
-
-                                xmlhttp.open("GET", "https://realgoat.duckdns.org/api/gamers/");
-                                xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
-                                xmlhttp.send();
-                            }
-                            
-                            load();
-                        </script>
-                    </p>
-                    <a href="#" class="btn btn-primary">Reload</a>
+                        <h5 class="card-title">Gamers</h5>
+                        <p class="card-gamerTableText">
+                            <table id='gamersTable' border='1' width='100%' style='border-collapse: separate;'>
+                                <tr>
+                                    <th onclick="sortTable(0, false, 'gamersTable')">Name</th>
+                                    <th onclick="sortTable(1, false, 'gamersTable')">DOB</th>
+                                    <th onclick="sortTable(2, true, 'gamersTable')">Age</th>
+                                    <th>#</th>
+                                </tr>
+                                {% for gamer in gamers %}
+                                <tr>
+                                    <td>{{ gamer["name"] }}</td>
+                                    <td>{{ gamer["dob"] }}</td>
+                                    <td>{{ gamer["age"] }}</td>
+                                    <td><a href="{{ url_for('delete_gamer', id=gamer["id"], gamername=gamer["name"]) }}">Delete</a></td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </p>
+                        <a href="#" class="btn btn-primary">Reload</a>
                     </div>
                 </div>
                 
@@ -170,24 +42,48 @@
                     <div class="card-body">
                     <h5 class="card-title">Leaderboards</mark></h5>
                     <p class="card-gamerTableText">
-                        <p id="leaderboards"></p>
+                        <table id='lboard' border='1' width='100%' style='border-collapse: separate;'>
+                            <tr>
+                                <th onclick="sortTable(0, false, 'lboard')">Name</th>
+                                <th onclick="sortTable(1, false, 'lboard')">Date</th>
+                                <th onclick="sortTable(2, true, 'lboard')">Score</th>
+                            </tr>
+                            {% for gamer in gamers %}
+                                {% for score in gamer["scores"] %}
+                                <tr>
+                                    <td>{{ gamer["name"] }}</td>
+                                    <td>{{ score["dateplayed"] }}</td>
+                                    <td>{{ score["score"] }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </table>
                     </p>
                     </div>
                 </div>
             </div>
-            <!--
+            
             <div class="col-4">
                 <div class="card">
                     
                     <div class="card-body">
                     <h5 class="card-title">Snakes</mark></h5>
                     <p class="card-gamerTableText">
-                        <iframe allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" id="game_drop" allowfullscreen="true" src="https://v6p9d9t4.ssl.hwcdn.net/html/7353839/index.html" scrolling="no" frameborder="0"></iframe>
+                        <iframe 
+                        allowtransparency="true" 
+                        webkitallowfullscreen="true" 
+                        mozallowfullscreen="true" 
+                        msallowfullscreen="true" 
+                        id="game_drop" 
+                        allowfullscreen="true" 
+                        src="https://v6p9d9t4.ssl.hwcdn.net/html/7428585/index.html" 
+                        scrolling="no" 
+                        frameborder="0" style="width:300px; height: 400px;"/>                        
                     </p>
                     </div>
                 </div>
             </div>
-            -->
+            
         </div>
     </div>
 {% endblock %}
