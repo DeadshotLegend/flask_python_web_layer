@@ -1,11 +1,10 @@
-<html lang="en-us"><script src="https://pygame-web.github.io/archives/0.6/pythons.js" type=module id="site" data-os="vtx,fs,snd,gui" async defer>#<!--
-
+<html lang="en-us"><script src="https://pygame-web.github.io/archives/0.7/pythons.js" type=module id="site" data-os="vtx,fs,snd,gui" async defer>#<!--
 print("""
     Loading snake from snake.apk
         Pygbag Version : 0.6.6
         Template Version : 0.6.6
         Python  : 3.11
-        CDN URL : https://pygame-web.github.io/archives/0.6/
+        CDN URL : https://pygame-web.github.io/archives/0.7/
         Screen  : 1024x600
         Title   : snake
         Folder  : snake
@@ -14,10 +13,9 @@ print("""
     
 """)
     
-    
 # screen pixels (real, hardware)
-WIDTH=1024  
-HEIGHT=600  
+WIDTH=300  
+HEIGHT=400  
 
 # reference/idealized screen pixels
 REFX = 1980
@@ -45,25 +43,15 @@ def uy(*argv):
         acc += u(HEIGHT, REFY, v)
     return acc
 
-
-
-
 # do not rename
 async def custom_site():
-
     import sys
     import asyncio
     import platform
     import json
     from pathlib import Path
-
-
-
     import embed
-
-
     platform.document.body.style.background = "#7f7f7f"
-
     import pygame
 
     def compose():
@@ -82,19 +70,14 @@ async def custom_site():
     platform.window.transfer.hidden = true
     platform.window.canvas.style.visibility = "visible"
 
-
-
-    apk = "snake.apk"
-
+    apk = "/static/assets/snake.apk"
     bundle = "snake"
 
     # the C or js loader could do that but be explicit.
     appdir = Path(f"/data/data/{bundle}") # /data/data/snake
     appdir.mkdir()
 
-
     # mount apk
-
     cfg = {
         "io": "url",
         "type":"mount",
@@ -105,12 +88,10 @@ async def custom_site():
         "path" : f"/ => {appdir.as_posix()}",
     }
 
-
     track = platform.window.MM.prepare(apk, json.dumps(cfg))
 
     marginx = ux(.020) # 20%
     marginy = uy(.045) # 45%
-
 
     def pg_bar(pos):
         nonlocal marginx, marginy
@@ -131,10 +112,8 @@ async def custom_site():
     pg_bar(track.len)
     compose()
 
-
     # preloader will change dir and prepend it to sys.path
     platform.run_main(PyConfig, loaderhome= appdir / "assets", loadermain=None)
-
 
     # wait preloading complete
     # that includes images and wasm compilation of bundled modules
@@ -185,22 +164,9 @@ async def custom_site():
 
     await shell.runpy(main, callback=ui_callback)
 
-
-
 import asyncio
 
 asyncio.run( custom_site() )
-
-
-
-
-
-
-
-
-
-
-
 
 # BEGIN BLOCK
 #
@@ -226,8 +192,6 @@ asyncio.run( custom_site() )
 --><script type="application/javascript">
 // END BLOCK
 
-
-
 // this dict is available under PyConfig.config from __main__
 
 config = {
@@ -239,27 +203,20 @@ config = {
     can_close : 0,
     archive : "snake",
     gui_debug : 3,
-    cdn : "https://pygame-web.github.io/archives/0.6/",
+    cdn : "https://pygame-web.github.io/archives/0.7/",
     autorun : 0,
     PYBUILD : "3.11"
 }
-
 </script>
-
     <title>snake</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
-
     <link rel="prefetch" href="https://pygame-web.github.io/archives/0.6/pythonrc.py">
     <link rel="prefetch" href="https://pygame-web.github.io/archives/0.6/vt/xterm.js">
     <link rel="prefetch" href="https://pygame-web.github.io/archives/0.6/vt/xterm-addon-image.js">
     <link rel="prefetch" href="https://pygame-web.github.io/archives/0.6/vt/xterm-addon-image.js">
-
-
-    <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
-
     <style>
         #status {
             display: inline-block;
@@ -284,18 +241,14 @@ config = {
         canvas.emscripten {
             border: 0px none;
             background-color: transparent;
-            width: 100%;
-            height:100%;
             z-index: 5;
-
             padding: 0;
             margin: 0 auto;
-
             position: absolute;
-            top: 0;
-            bottom: 0;
             left: 0;
             right: 0;
+            height: 400px !important;
+            width: 300px !important;
         }
 
         body {
@@ -337,31 +290,25 @@ config = {
         }
     </style>
 
-    <script src="https://pygame-web.github.io/archives/0.6//browserfs.min.js"></script>
+    <script src="https://pygame-web.github.io/archives/0.7//browserfs.min.js"></script>
 
 </head>
-
 <body>
-
-    <div id="transfer" align=center>
-<!--        <div class="spinner" id='spinner'></div> -->
+    
+                <div id="transfer" align="center">
+    <!--        <div class="spinner" id='spinner'></div> -->
         <div class="emscripten" id="status">Downloading...</div>
         <div class="emscripten">
             <progress value="0" max="100" id="progress"></progress>
         </div>
     </div>
-
-
     <canvas class="emscripten" id="canvas"
-width="1px"
-height="1px"
-    oncontextmenu="event.preventDefault()" tabindex=1>
+        width="1px"
+        height="1px"
+        oncontextmenu="event.preventDefault()" tabindex="1">
     </canvas>
-
-    <div id=html></div>
-
-    <div id=crt  class=bottomright >
-
+    <div id="html"></div>
+    <div id="crt"  class="bottomright" >
         <div id="system" hidden>
             <div class="button-container">
                 <button id="aiostop" disabled>AIO ⏏︎</button>
@@ -369,75 +316,63 @@ height="1px"
                 <button id="aiopaused_false" disabled>AIO ▶</button>
                 <button id="pygame_mixer_music_pause" disabled>Music ■</button>
             </div>
-
             <div class="button-container">
-                <div id=load_min>min</div>
-                <div id=load_avg>avg</div>
-                <div id=load_max>max</div>
+                <div id="load_min">min</div>
+                <div id="load_avg">avg</div>
+                <div id="load_max">max</div>
                 <button id="load_rst" disabled>RESET</button>
             </div>
-
             <div id="level">(battery level unknown)</div>
             <div id="stateBattery">(charging state unknown)</div>
-
         </div>
-
-        <div id=box class="emscripten_border" hidden=true>
-
+        <div id="box" class="emscripten_border" hidden="true">
             <div id="info" class="trinfo"></div>
-
             <iframe id="iframe" class="framed" name="iframe"
-width="470px" height="90%"
-allowtransparency="true"
-style="z-index: 10; style="background: #FFFFFF;"
-frameborder="1"
+                width="300px" height="400px"
+                allowtransparency="true"
+                style="z-index: 10; background: #FFFFFF;"
+                frameborder="1"
                 allowfullscreen="true"
                 webkitallowfullscreen="true"
                 msallowfullscreen="true"
                 mozallowfullscreen="true"
                 sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
                 allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
-                src="https://pygame-web.github.io/archives/0.6/empty.html"
+                src="https://pygame-web.github.io/archives/0.7/empty.html"
                 scrolling="yes">
             </iframe>
         </div>
-
     </div>
-
-
     <div id="dlg" hidden>
         <input type="file" id="dlg_multifile" multiple accept="image/*">
         <label for="dlg_multifile">Select files</label>
     </div>
-
     <div id="pyconsole">
-        <div id="terminal" tabIndex=1 align="left"></div>
+        <div id="terminal" tabIndex="1" align="left"></div>
     </div>
-
+    
+    
     <script type="application/javascript">
-
     async function custom_onload(debug_hidden) {
         // this is called before anythinh python is loaded
         // make your js customization here
         console.log(__FILE__, "custom_onload")
-
         pyconsole.hidden = debug_hidden
         system.hidden = debug_hidden
         transfer.hidden = debug_hidden
         info.hidden = debug_hidden
         box.hidden =  debug_hidden
+        window.onbeforeunload = null
     }
 
     function custom_prerun(){
         // no python main and no (MEMFS + VFS) yet.
         console.log(__FILE__, "custom_prerun")
-
     }
 
     function custom_postrun(){
         // python main and no VFS filesystem yet.
         console.log(__FILE__, "custom_postrun")
-
     }
 
     function debug() {
@@ -468,8 +403,6 @@ frameborder="1"
     function frame_online(url) {
         window.frames["iframe"].location = url;
     }
-
     </script>
-
 </body>
 </html>

@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+{% set project = "Login" %}
+{% block body %}
+<!-- update user profile -->
+<div class="px-5 py-5 mx-auto">
+    <div class="row">
+        <div class="col-6">
+            <form action="/gamers/update" enctype="multipart/form-data" method="POST"> 
+                <table width="100%">
+                    <tr>
+                        <th style="width:200px"><label for="name">Name</label></th>
+                        <td><input style="width:400px" type="text" id="name" name="name" value="{{ user_json_object.name }}"/></td>
+                    </tr>
+                    <tr>
+                        <th style="width:200px"><label for="uid">ID</label></th>
+                        <td><input style="width:400px" type="text" readonly disabled value="{{ user_json_object.uid }}"/>
+                            <input type="hidden" id="uid" name="uid" value="{{ user_json_object.uid }}"/>
+                            <input type="hidden" id="id" name="id" value="{{ user_json_object.id }}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width:200px"><label for="password">Password</label></th>
+                        <td><input style="width:400px" type="password" id="password" name="password" /></td>
+                    </tr>
+                    <tr>
+                        <th style="width:200px"><label for="doc">Date of Birth</label></th>
+                        <td><input style="width:400px" type="date"  readonly disabled value="{{ user_json_object.dob }}"/>
+                            <input type="hidden" id="dob" name="dob" value="{{ user_json_object.dob }}"/></td>
+                    </tr>
+                    <tr><th style="width:200px"><label for="level">Difficulty Level</label></th>
+                        <td>
+                            <select style="width:400px" id="level" name="level" >
+                                <option value="0" {% if user_json_object.level == 0 %}  selected {% endif %}>Beginner</option>
+                                <option value="1" {% if user_json_object.level == 1 %}  selected {% endif %}>Easy</option>
+                                <option value="2" {% if user_json_object.level == 2 %}  selected {% endif %}>Medium</option>
+                                <option value="3" {% if user_json_object.level == 3 %}  selected {% endif %}>Hard</option>
+                                <option value="4" {% if user_json_object.level == 4 %}  selected {% endif %}>Master</option>
+                                <option value="5" {% if user_json_object.level == 5 %}  selected {% endif %}>God</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td colspan="2"><button type="submit">Update!</button></td></tr>
+                </table>
+            </form>
+            {% if msg %}
+            {{ msg }}
+            {% endif %}
+        </div>
+        <!-- show user scores - if any -->
+        {% if user_scores_json %}
+        <div class="col-6">
+            <table id='lboard' style='float:right;border-collapse: separate;'>
+                {% include "user-scores.html" %}
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

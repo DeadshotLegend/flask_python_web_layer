@@ -2,53 +2,40 @@
 {% set project = "Home" %}
 
 {% block body %}
-    <!-- Start of body content specific to page -->
+    <!-- Insert Snake Game in the login page -->
     <div class="px-5 py-5 mx-auto">
-        <h1 class="text-black"><strong>This is the Fruit Team with with Shivansh Goel, Ryan, Lucas, and Houaxan</strong></h1>
         <div class="row">
-            <div class="col-4">
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <h5 class="card-title">Our Goal</mark></h5>
-                    <p class="card-text">
-                        <ol>
-                        Our team is committed to making better entertainment devices and applications
-                        </ol>
-                    </p>
-                    </div>
-                </div>
+            <div class="col-6">
+                <p class="card-gamerTableText">
+                    <iframe name="SnakeGame" title="Snake Game by Shivansh"
+                    allowtransparency="true" 
+                    webkitallowfullscreen="true" 
+                    mozallowfullscreen="true" 
+                    msallowfullscreen="true" 
+                    id="game_drop" 
+                    allowfullscreen="true" 
+                    src="/snake_game" 
+                    scrolling="no" 
+                    frameborder="0" style="width:300px; height: 400px;"></iframe>                     
+                </p>
             </div>
-            <div class="col-4">
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <h5 class="card-title">Our Features</h5>
-                    <p class="card-text">
-                        <ol>
-                        What features the team is providing. We are providing Gaming, testing, and different internet applications to pique your interests
-                        </ol>
-                    </p>
-                    
-                    </div>
-                </div>
+            <!-- if user is logged in and has past scores then show them here -->
+            {% if user_scores_json %}
+            <div class="col-6">
+                <table id='user_scores' style='float:right;border-collapse: separate;'>
+                    {% include "user-scores.html" %}
+                </table>
+                <div id="user_high_score" style='float:right;border-collapse: separate;display: none;'></div>
             </div>
-            <div class="col-4">
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <h5 class="card-title">Our Team</h5>
-                    <p class="card-text">
-                        <ol>
-                        Currently, our team features four individuals in AP Computer Science Principles: Shivansh Goel.... 
-                        We hope to expand our team in the future, but for now, we are all very focused on delivering the best user experience possible on our site.   
-                        </ol>
-                    </p>
-                    
-                    </div>
-                </div>
+            {% else %}
+            <!-- create a place holder as scores will be dynamically updated from with the game -->
+            <div class="col-6">
+                <table id='user_scores' style='float:right;border-collapse: separate;display: none;'>
+                </table>
+                <div id="user_high_score" style='float:right;border-collapse: separate;display: none;'></div>
             </div>
-            
+            {% endif %}
         </div>
     </div>
+    
 {% endblock %}

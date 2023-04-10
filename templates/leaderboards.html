@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+{% set project = "Snakes Leaderboards" %}
+ 
+{% block body %}
+    <!-- Show the leaderboards -->
+    <div class="px-5 py-5 mx-auto">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">                    
+                    <div class="card-body">
+                        <table id='lboard'  width='100%' style='border-collapse: separate;'>
+                            <tr>
+                                <th onclick="sortTable(0, false, 'lboard')">Name</th>
+                                <th onclick="sortTable(1, false, 'lboard')">Date</th>
+                                <th onclick="sortTable(2, true, 'lboard')">Score</th>
+                            </tr>
+                            {% for score in scores %}
+                            <tr>
+                                <td>{{ score["name"] }}</td>
+                                <td>{{ score["dateplayed"] }}</td>
+                                <td>{{ score["score"] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

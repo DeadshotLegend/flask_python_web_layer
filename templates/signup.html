@@ -1,182 +1,53 @@
 {% extends "layouts/base.html" %}
-{% set project = "Snakes Signup" %}
- 
+{% set project = "Snakes Signup" %} 
 {% block body %}
-    <!-- Start of body content specific to page -->
-    <div class="px-5 py-5 mx-auto">
+    <!-- Signup page -->
+    <div class="px-5 mx-auto">
         <h1 ><strong>Lets Play Snakes!</strong></h1>
         <div class="row">
-            
+            <div class="col-6">
                 <div class="card">
                     <div class="card-body">
-                    <h5 class="card-title">Signup</h5>
-                    <p id="gamers"></p>
-                   
-                    <p class="card-text">
-                        <script>
-                            function sortTable(n) {
-                                var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-                                table = document.getElementById("lboard");
-                                switching = true;
-                                // Set the sorting direction to ascending:
-                                dir = "desc";
-                                /* Make a loop that will continue until
-                                no switching has been done: */
-                                while (switching) {
-                                    // Start by saying: no switching is done:
-                                    switching = false;
-                                    rows = table.rows;
-                                    /* Loop through all table rows (except the
-                                    first, which contains table headers): */
-                                    for (i = 1; i < (rows.length - 1); i++) {
-                                        // Start by saying there should be no switching:
-                                        shouldSwitch = false;
-                                        /* Get the two elements you want to compare,
-                                        one from current row and one from the next: */
-                                        x = rows[i].getElementsByTagName("TD")[n];
-                                        y = rows[i + 1].getElementsByTagName("TD")[n];
-                                        /* Check if the two rows should switch place,
-                                        based on the direction, asc or desc: */
-                                        if (dir == "asc") {
-                                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                                                // If so, mark as a switch and break the loop:
-                                                shouldSwitch = true;
-                                                break;
-                                            }
-                                        } else if (dir == "desc") {
-                                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                                                // If so, mark as a switch and break the loop:
-                                                shouldSwitch = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (shouldSwitch) {
-                                        /* If a switch has been marked, make the switch
-                                        and mark that a switch has been done: */
-                                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                                        switching = true;
-                                        // Each time a switch is done, increase this count by 1:
-                                        switchcount ++;
-                                    } else {
-                                        /* If no switching has been done AND the direction is "asc",
-                                        set the direction to "desc" and run the while loop again. */
-                                        if (switchcount == 0 && dir == "asc") {
-                                            dir = "desc";
-                                            switching = true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            const leaderboards = {};
-
-                            function load(){
-                                const dbParam = JSON.stringify({table:"gamers",limit:20});
-                                const xmlhttp = new XMLHttpRequest();
-                                xmlhttp.onload = function() {
-                                    const gamers = JSON.parse(this.responseText);
-                                    let text = "<table border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>DOB</th><th>Age</th></tr>";
-                                    let text1 = "<table id='lboard' border='1' width='100%' style='border-collapse: separate;'><tr><th>Name</th><th>Date</th><th>Score</th></tr>";
-                                    
-                                    let counter = 0;
-                                    for (let gamer in gamers) {
-                                        let gamerName = gamers[gamer].name;
-                                        text += "<tr><td>" + gamerName + "</td><td>" + gamers[gamer].dob + "</td><td>" + gamers[gamer].age + "</td></tr>";
-                                        console.log(gamerName);
-
-                                        for (let score in gamers[gamer].scores){
-                                            let scoreTemp = {};
-                                            scoreTemp["gamername"] = gamerName;
-                                            let datePlayed = gamers[gamer].scores[score]["dateplayed"];
-                                            let scoreGot = gamers[gamer].scores[score]["score"];
-                                            text1 +="<tr><td>" + gamerName + "</td><td>" +datePlayed + "</td><td>" + scoreGot + "</td></tr>";
-                                            //console.log(gamers[gamer].scores)
-                                            //console.log(gamers[gamer].scores[score]);
-                                            //console.log(gamers[gamer].scores[score]["dateplayed"]);
-                                            //console.log(gamers[gamer].scores[score]["score"]);
-                                            scoreTemp["dateplayed"] = datePlayed;
-                                            scoreTemp["score"] = scoreGot;
-                                            leaderboards[counter++] = scoreTemp;
-                                        }
-                                        
-                                    }
-                                    text += "</table>";
-                                    text1 += "</table>";
-                                    //console.log(Object.keys(leaderboards));
-                                    document.getElementById("gamers").innerHTML = text;
-                                    document.getElementById("leaderboards").innerHTML = text1;
-                                    sortTable(2);
-                                }
-
-                                xmlhttp.open("GET", "https://realgoat.duckdns.org/api/gamers/");
-                                xmlhttp.setRequestHeader("Content-type", "application/team-www-form-urlencoded");
-                                xmlhttp.send("team=" + dbParam);
-                            }
-
-                            function signmeup(){
-                                let eUserName = document.getElementById("username");
-                                let eUserId = document.getElementById("userid");
-                                let ePassword = document.getElementById("password");
-                                let eDob = document.getElementById("dob");
-                                console.log(eUserName.value);
-                                console.log(eUserId.value);
-                                console.log(ePassword.value);
-                                console.log(eDob.value);
-                                let dobValue = eDob.value.split("-");
-                                console.log(dobValue);
-                                let dobValueFormatted = dobValue[1] + "-" + dobValue[2] +"-" +dobValue[0];
-                                console.log(dobValueFormatted);
-                                let reqData = "{\"dob\":\""+dobValueFormatted+"\",\"name\":\""+eUserName.value+"\",\"uid\":\""+eUserId.value+"\",\"password\":\""+ePassword.value+"\"}";
-                                console.log(reqData);
-                                
-                                const dbParam = JSON.stringify({table:"gamers",limit:20});
-                                const xmlhttp = new XMLHttpRequest();
-                                xmlhttp.onload = function() {
-                                    const gamers = JSON.parse(this.responseText);
-                                    console.log(gamers);
-                                    if (gamers["id"]){
-                                        console.log("Success");
-                                        document.getElementById("msg").innerHTML = "You are all set to enjoy Snakes!";
-                                    } else if (gamers["message"]){
-                                        console.log(gamers["message"]);
-                                        document.getElementById("msg").innerHTML = "No dice! Something did not go your way. ("+gamers["message"]+")";
-                                    }
-                                }
-
-                                xmlhttp.open("POST", "https://realgoat.duckdns.org/api/gamers/create", true);
-                                xmlhttp.setRequestHeader("Content-type", "application/json");
-                                xmlhttp.send(reqData);
-                            }
-                            
-                            //load();
-                        </script>
-                        <table width="100%">
-                            <tr><th style="width:200px"><label for="username">Name</label></th><td><input style="width:400px" type="text" id="username"/></td></tr>
-                            <tr><th style="width:200px"><label for="userid">ID</label></th><td><input style="width:400px" type="text" id="userid"/></td></tr>
-                            <tr><th style="width:200px"><label for="password">Password</label></th><td><input style="width:400px" type="password" id="password"/></td></tr>
-                            <tr><th style="width:200px"><label for="doc">Date of Birth</label></th><td><input style="width:400px" type="date" id="dob"/></td></tr>
-                            <tr><td colspan="2"><button type="button" onclick="signmeup()">Sign me up!</button></td></tr>
-                        </table>
-                        <p id="msg"></p>
-                    </p>
-                    </div>
-               
-                
-            </div>
-            <!--
-            <div class="col-4">
-                <div class="card">
-                    
-                    <div class="card-body">
-                    <h5 class="card-title">Snakes</mark></h5>
-                    <p class="card-text">
-                        <iframe allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" id="game_drop" allowfullscreen="true" src="https://v6p9d9t4.ssl.hwcdn.net/html/7353839/index.html" scrolling="no" frameborder="0"></iframe>
-                    </p>
+                        <h5 class="card-title">Signup</h5>
+                        <p class="card-text">
+                            <form action="/gamers/create" enctype="multipart/form-data" method="POST"> 
+                                <table width="100%">
+                                    <tr>
+                                        <th style="width:200px"><label for="name">Name</label></th>
+                                        <td><input style="width:400px" type="text" id="name" name="name" required/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:200px"><label for="uid">ID</label></th>
+                                        <td><input style="width:400px" type="text" id="uid" name="uid" required/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:200px"><label for="password">Password</label></th>
+                                        <td><input style="width:400px" type="password" id="password" name="password" required/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:200px"><label for="doc">Date of Birth</label></th>
+                                        <td><input style="width:400px" type="date" id="dob" name="dob" required/></td>
+                                    </tr>
+                                    <tr><th style="width:200px"><label for="level">Difficulty Level</label></th>
+                                        <td>
+                                            <select style="width:400px" id="level" name="level">
+                                                <option value="0">Beginner</option>
+                                                <option value="1">Easy</option>
+                                                <option value="2">Medium</option>
+                                                <option value="3">Hard</option>
+                                                <option value="4">Master</option>
+                                                <option value="5">God</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan="2"><button type="submit">Sign me up!</button></td></tr>
+                                </table>
+                            </form>
+                            <p id="msg"></p>
+                        </p>
                     </div>
                 </div>
             </div>
-            -->
         </div>
     </div>
 {% endblock %}

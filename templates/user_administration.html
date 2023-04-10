@@ -1,0 +1,33 @@
+{% extends "layouts/base.html" %}
+{% set project = "User Administration" %}
+ 
+{% block body %}
+    <!-- User Administration Page -->
+    <div class="px-5 py-5 mx-auto">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gamers</h5>
+                        <table id='gamersTable' width='100%' style='border-collapse: separate;'>
+                            <tr>
+                                <th onclick="sortTable(0, false, 'gamersTable')">Name</th>
+                                <th onclick="sortTable(1, false, 'gamersTable')">DOB</th>
+                                <th onclick="sortTable(2, true, 'gamersTable')">Age</th>
+                                <th>#</th>
+                            </tr>
+                            {% for gamer in gamers %}
+                            <tr>
+                                <td>{{ gamer["name"] }}</td>
+                                <td>{{ gamer["dob"] }}</td>
+                                <td>{{ gamer["age"] }}</td>
+                                <td><a href="{{ url_for('delete_gamer', id=gamer['id'], name=gamer['name']) }}">Delete</a></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

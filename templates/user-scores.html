@@ -1,0 +1,13 @@
+<!-- User Scores table to dynamically load when scores change -->
+<caption style="caption-side: top !important;text-align: center !important;">Scores (<a href={{ url_for('delete_scores') }}>Clear Scores</a>)
+</caption>
+<tr>
+    <th style="width: 150px;" onclick="sortTable(0, false, 'user_scores')">Date</th>
+    <th style="width: 100px;" onclick="sortTable(1, true, 'user_scores')">Score</th>
+</tr>
+{% for score in user_scores_json %}
+<tr>
+    <td>{{ score["dateplayed"] }}</td>
+    <td>{{ score["score"] }}</td>
+</tr>
+{% endfor %}
