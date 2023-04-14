@@ -8,6 +8,4 @@ flask_migrate
 flask_restful
 flask_cors
 pathlib
-urllib.parse
-fetch
 pygame

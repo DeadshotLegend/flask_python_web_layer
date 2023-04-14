@@ -13,7 +13,7 @@ from __init__ import app, login_manager  # Definitions initialization
 import threading
 
 # URL of the DB layer - may need to externalize this in docker
-rootUrl = "http://192.168.68.53:8343/api"
+rootUrl = "http://172.24.148.228:8343/api"
 
 # catch for URL not found
 @app.errorhandler(404)
@@ -303,4 +303,4 @@ def user_admin():
     
 # this runs the application on the development server
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port="8096")
+    app.run(debug=True, host="0.0.0.0", port="8097")
