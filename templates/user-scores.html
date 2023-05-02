@@ -5,6 +5,7 @@
     <th style="width: 150px;" onclick="sortTable(0, false, 'user_scores')">Date</th>
     <th style="width: 100px;" onclick="sortTable(1, true, 'user_scores')">Score</th>
 </tr>
+<!-- show the users score - iterate over scores collection -->
 {% for score in user_scores_json %}
 <tr>
     <td>{{ score["dateplayed"] }}</td>

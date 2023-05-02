@@ -1,7 +1,6 @@
-const jk = "s3cr3t";
-function test(){
-    
-}
+// ref: uses the sortTable example from: https://www.w3schools.com/howto/howto_js_sort_table.asp
+// customized for application's use as the one on w3schools wasn't sorting number properly
+// generalized by passing a tableid, that way this can be used for any table
 function sortTable(n, isNumber, tableId) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById(tableId);

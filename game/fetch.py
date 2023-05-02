@@ -1,3 +1,9 @@
+# used in collaboration with https://github.com/pmp-p
+# https://github.com/pygame-web/pygbag/blob/853b2c6e033e06f84d5a0ab51251fc419dd91b9e/pygbag/support/cross/aio/fetch.py
+# this file is used to embed fetch async io capabilities to Pygbag based web python games
+# this is a customized version of fetch.py from above location to create functions needed for my project
+# Ref: https://pypi.org/project/pygbag/
+# Runs python code directly in modern web browsers
 import sys
 import os
 import asyncio

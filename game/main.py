@@ -1,24 +1,35 @@
+# uses pygame 
+# uses pygbag
+# Ref: https://pypi.org/project/pygbag/
+# Runs python code directly in modern web brows
+
 import pygame, random, asyncio, time, sys
 from sys import exit, path
 from fetch import RequestHandler
 import json
-from game_js import JSTools
 
-
+""" User Profile fields """
 #logged in user's id
-uid=11
+# default to 0 uid and username Guest
+# in the guest mode the scores are not saved
+uid=0
 username="Guest"
+# default difficulty is 1 (beginner)
 difficulty=1
-previousHighScore=0
-# this should be configured in user's profile
-gamespeed=2
 
-""" user should be able to select High | Medium | Low speeds """
+previousHighScore=0
+# this depends on the difficulty level. Default 0 (slowest)
+gamespeed=2
+""" User Profile fields """
+
+# RequestHandler from fetch.py
+# used to save scores by calling async fetch to model API
 req = RequestHandler()
-tools = JSTools()
 # board size
 height=400
 width=300
+
+# initial display
 dis=pygame.display.set_mode((width,height))
 #snake size
 snake_size=10
@@ -34,13 +45,17 @@ green=(0,255,0)
 brown=(123,63,0)
 yellow=(255,255,0)
 almond=(234, 221, 202)
+
+# to track when the score is successfully posted
 score_post_success=False
 
+# get logged in user's info using RequestHandler
+# this will set the user profile data and customize difficulty and speed
 async def getUserInfo():
     print("Getting user data")
     try:
+        # call getLoginUser from RequestHandler - custom function
         userdata = await RequestHandler.getLoginUser(req)
-        #userdata = await JSTools.getLoginUser(tools)
         print ("Got user data")
         print (userdata)
         global username
@@ -57,6 +72,7 @@ async def getUserInfo():
             username = userinfo.get("name")
             previousHighScore = userinfo.get("highscore")
 
+            # speed progressively increases with difficulty levels, topping out at 10
             if (difficulty == 0):
                 gamespeed = 2
             elif (difficulty == 1):
@@ -74,6 +90,7 @@ async def getUserInfo():
     except:
         print("Error in getting user data")
 
+# displays the tier of the user as user scores increase
 def showTier():
     global gamespeed
     font = pygame.font.SysFont(None, 15)
@@ -93,6 +110,7 @@ def showTier():
     score_text = font.render(tierVal + " Tier", True, black)
     dis.blit(score_text, [width-70, 0])
 
+# posts the score to the model / db layer using fetch api
 async def postScore(score):
     global score_post_success
     global previousHighScore
@@ -102,9 +120,12 @@ async def postScore(score):
     print("Result is: " + result)
     score_post_success=True
 
+    # keeps track of high scores
     if score > previousHighScore:
         previousHighScore = score
 
+# function called when game is lost
+# shows scores, message to restart game
 def gameLost(score):
     dis.fill(black)
     font = pygame.font.SysFont(None, 15)
@@ -118,6 +139,8 @@ def gameLost(score):
         score_text = font.render("Score posted on server", True, white)
         dis.blit(score_text, [150, 0])
 
+# function called when game is closed
+# shows messages
 def gameClosed(score):
     dis.fill(black)
     font = pygame.font.SysFont(None, 15)
@@ -127,6 +150,7 @@ def gameClosed(score):
     game_over_text = font1.render("See you soon " + username, True, white)
     dis.blit(game_over_text, [5, height/2 - 25])
 
+# displays scores on the game UI as game progresses
 def showScore(score):
     font = pygame.font.SysFont(None, 15)
     score_text = font.render(username + " - ("+str(score)+")", True, black)
@@ -152,7 +176,7 @@ async def main():
     # game board
     pygame.display.set_caption('Snake game by Shivansh Goel DNHS APCSP')
 
-    #initial snake position - centered for 
+    #place the snake in the middle of the screen in the beginning
     snake_x = width/2
     snake_y = height/2
     x1_change = 0
@@ -161,6 +185,7 @@ async def main():
     oldscore=0
     score_increment=1
     snake_shape = []
+    # snake starts with length of 1
     snake_len = 1
     game_quit=False
     game_lost=False
@@ -171,34 +196,36 @@ async def main():
     if gamespeed == 2:
         is_beginner = True
 
-    # initial mouse position
+    # initial mouse position - randomized
     mouse_x = round(random.randrange(0, width - mouse_size) / 10.0) * 10.0
     mouse_y = round(random.randrange(0, height - mouse_size) / 10.0) * 10.0
 
     pygame.draw.rect(dis, black, [snake_x, snake_y, snake_size, snake_size])
-    #pygame.display.update()
-    #dis.fill(blue)
 
     #the clock
     clock = pygame.time.Clock()    
     
     # check when game is over
     while not game_quit:
+        # increment game speed after gamer get 10 more points than before
         if score - oldscore > 10:
             oldscore += 10
             if gamespeed < 10:
                 gamespeed += 1
             else:
                 print("God Tier")
-            
+        
+        # clock tick with gamespeed. This controls how fast the game moves
         clock.tick(gamespeed)
  
+        # check for user events (up | down | left | right | close | enter)
         for event in pygame.event.get():
+            # close the game
             if event.type == pygame.QUIT:
                 game_quit = True
                 dis.fill(black)
                 gameClosed(score)
-                #pygame.time.wait(3000)
+            # if the event is key down, check for which key
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x1_change = -snake_size
@@ -212,6 +239,7 @@ async def main():
                 elif event.key == pygame.K_DOWN:
                     y1_change = snake_size
                     x1_change = 0
+                # enter key restarts the game (when the previous game is lost)
                 elif event.key == pygame.K_RETURN and game_lost:
                     await RequestHandler.clearHighScore(req)
                     #initial snake position - centered for 
@@ -233,6 +261,8 @@ async def main():
                     #pygame.display.update()
                     dis.fill(almond)
 
+        # if the snake hits the wall then game ends, except when it is beginner mode (did this for my little sister)
+        # in case of beginners the snake wraps around and comes out of the other side of the screen
         if snake_x >= width or snake_x < 0 or snake_y >= height or snake_y < 0:
             if is_beginner: 
                 if snake_x >=width:
@@ -247,10 +277,12 @@ async def main():
                 game_lost = True
                 dis.fill(black)
 
+        # make snake move 
         snake_x += x1_change
         snake_y += y1_change
         dis.fill(almond)
 
+        # to make things interesting, provide different colored snakes with different score increments
         if (score_increment == 1):
             pygame.draw.rect(dis, brown, [mouse_x, mouse_y, snake_size, snake_size])
         elif (score_increment == 2):

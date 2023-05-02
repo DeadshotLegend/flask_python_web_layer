@@ -14,6 +14,7 @@
                                 <th onclick="sortTable(1, false, 'lboard')">Date</th>
                                 <th onclick="sortTable(2, true, 'lboard')">Score</th>
                             </tr>
+                            <!-- iterate over collection of scores and display all scores -->
                             {% for score in scores %}
                             <tr>
                                 <td>{{ score["name"] }}</td>
